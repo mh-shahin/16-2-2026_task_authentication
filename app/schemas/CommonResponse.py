@@ -1,4 +1,4 @@
-from typing import Generic, Optional, TypeVar
+from typing import Generic, Optional, TypeVar, List
 from pydantic import BaseModel
 
 T = TypeVar("T")
@@ -30,7 +30,10 @@ class PaginatedResponse(BaseModel, Generic[T]):
     data: Optional[T] = None
     meta: Optional[PageMeta] = None
     
- 
+
+class PaginatedListResponse(BaseModel, Generic[T]):
+    items: List[T]
+    pagination: Optional[PageMeta] = None
  
  
     

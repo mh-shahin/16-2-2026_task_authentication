@@ -21,4 +21,16 @@ class TicketResponse(BaseModel):
     user_id: int
     quantity: int
     total_price: float
-    purchase_date: datetime
+    payment_status: str
+    purchases_at: Optional[datetime] = None
+    refund_at: Optional[datetime] = None
+    
+    
+    class Config:
+        from_attributes = True
+        
+        
+        
+class CheckoutSessionResponse(BaseModel):
+    session_id: str
+    checkout_url: str

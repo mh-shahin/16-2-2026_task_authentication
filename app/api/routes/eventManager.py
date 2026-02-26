@@ -1,17 +1,14 @@
-from unittest import result
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sentry_sdk.utils import now
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime, timezone
-# from supabase_auth import datetime
 from app.database import get_db
-from app.models import message
 from app.schemas.eventManager import ManagerRequestResponse, ManagerReviewRequest
 from app.schemas.CommonResponse import ApiResponse
 from app.models.eventManager import EventManager
 from app.models.auth import User
-from app.api.deps import get_current_user, require_admin, require_event_manager, require_user_or_manager
+from app.api.deps import get_current_user, require_admin
 
 
 now = datetime.now(timezone.utc)

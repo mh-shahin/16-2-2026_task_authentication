@@ -36,7 +36,7 @@ class Event(Base, TimestampMixin):
     manager = relationship("User", back_populates="events")
     images = relationship("EventImage", back_populates="event", cascade="all, delete-orphan")
     tickets = relationship("Ticket", back_populates="event", cascade="all, delete-orphan")
-    messages = relationship("Message", back_populates="event", cascade="all, delete-orphan")
+    chatrooms = relationship("Chatroom", back_populates="event", cascade="all, delete-orphan")
     
     def __repr__(self):
         return f"<Event(id={self.id}, title='{self.title}', manager_id={self.manager_id})>"

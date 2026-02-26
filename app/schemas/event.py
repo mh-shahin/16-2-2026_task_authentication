@@ -18,7 +18,6 @@ class EventCreate(BaseModel):
     ticket_price: float
     ticket_limit: int
     event_date: datetime
-    images: List[UploadFile] = Field(default_factory=list)
 
     @field_validator("title")
     @classmethod
@@ -48,13 +47,6 @@ class EventCreate(BaseModel):
             raise ValueError("Ticket limit must be a positive integer")
         return v
 
-    @field_validator("images")
-    @classmethod
-    def validate_images(cls, v: List[UploadFile]):
-        if len(v) > 5:
-            raise ValueError("You can upload a maximum of 5 images per event")
-        return v
-
 
 class EventUpdate(BaseModel):
     title: Optional[str] = None
@@ -64,7 +56,6 @@ class EventUpdate(BaseModel):
     longitude: Optional[float] = None
     ticket_limit: Optional[int] = None
     event_date: Optional[datetime] = None
-    images: List[UploadFile] = Field(default_factory=list)
 
 
     @field_validator("title")

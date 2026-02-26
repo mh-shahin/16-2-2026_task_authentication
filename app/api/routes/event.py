@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status, Form, File
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from typing import List, Dict
+from typing import List, Dict, Optional
 from datetime import datetime, timezone
 from decimal import Decimal
-
 from app.database import get_db
 from app.api.deps import get_current_user, require_event_manager
 from app.schemas.CommonResponse import ApiResponse, PageMeta, PaginatedResponse
@@ -47,10 +46,27 @@ def to_event_out(event: Event, manager_username: str, images: List[EventImage]) 
 
 @router.post("/create", response_model=ApiResponse[EventOut])
 def create_event(
-    event: EventCreate,
+    title: str = Form(...),
+    description: str = Form(...),
+    location: str = Form(...),
+    latitude: Optional[float] = Form(None),
+    longitude: Optional[float] = Form(None),
+    ticket_price: float = Form(...),
+    ticket_limit: int = Form(...),
+    event_date: datetime = Form(...),
+    images: List[UploadFile] = File([]),
+    
     current_user: dict = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    if len(images) > 5:
+        return ApiResponse(
+            success=False,
+            statusCode=status.HTTP_400_BAD_REQUEST,
+            message="You can upload a maximum of 5 images per event",
+            data=None
+        )
+        
     user = db.query(User).filter(User.id == current_user["id"]).first()
     if not user:
         return ApiResponse(
@@ -72,15 +88,15 @@ def create_event(
 
     new_event = Event(
         manager_id=user.id,
-        title=event.title,
-        description=event.description,
-        location=event.location,
-        latitude=event.latitude,
-        longitude=event.longitude,
-        ticket_price=Decimal(str(event.ticket_price)),
-        ticket_limit=event.ticket_limit,
+        title=title.strip(),
+        description=description.strip(),
+        location=location.strip(),
+        latitude=latitude,
+        longitude=longitude,
+        ticket_price=Decimal(str(ticket_price)),
+        ticket_limit=ticket_limit,
         tickets_sold=0,
-        event_date=event.event_date,
+        event_date=event_date,
         created_at=now,
         updated_at=now,
         is_active=True,
@@ -90,7 +106,7 @@ def create_event(
     db.refresh(new_event)
 
     saved_images: List[EventImage] = []
-    for idx, image in enumerate(event.images):
+    for idx, image in enumerate(images):
         upload_result = upload_image(image.file, folder="event_images")
         if not upload_result:
             return ApiResponse(
@@ -102,7 +118,7 @@ def create_event(
 
         event_image = EventImage(
             event_id=new_event.id,
-            image_url=upload_result["secure_url"],
+            image_url=upload_result["url"],
             cloudinary_public_id=upload_result["public_id"],
             display_order=idx,
             uploaded_at=now,

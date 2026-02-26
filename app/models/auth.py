@@ -23,8 +23,8 @@ class User(Base, TimestampMixin):
     event_manager = relationship("EventManager", back_populates="user", foreign_keys="EventManager.user_id", uselist=False, cascade="all, delete-orphan")
     events = relationship("Event", back_populates="manager", cascade="all, delete-orphan")
     tickets = relationship("Ticket", back_populates="user", cascade="all, delete-orphan")
-    sent_messages = relationship("Message", foreign_keys="Message.sender_id", back_populates="sender", cascade="all, delete-orphan")
-    received_messages = relationship("Message", foreign_keys="Message.recipient_id", back_populates="recipient", cascade="all, delete-orphan")
+    sent_messages = relationship("ChatMessage", foreign_keys="ChatMessage.sender_id", back_populates="sender", cascade="all, delete-orphan")
+    received_messages = relationship("ChatMessage", foreign_keys="ChatMessage.recipient_id", back_populates="recipient", cascade="all, delete-orphan")
     
     
     def __repr__(self):

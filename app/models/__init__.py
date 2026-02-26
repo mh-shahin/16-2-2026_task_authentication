@@ -1,7 +1,7 @@
 from app.models.auth import User
 from app.models.eventManager import EventManager
 from app.models.event import Event, EventImage
-from app.models.message import Message
+from app.models.chat import Chatroom, ChatMessage
 from app.models.ticket import Ticket
 
 
@@ -10,6 +10,7 @@ __all__ = [
     "EventManager",
     "Event",
     "EventImage",
-    "Message",
+    "Chatroom",
+    "ChatMessage",
     "Ticket"
 ]

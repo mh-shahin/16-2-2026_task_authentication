@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from app.api.routes.auth import router
 from app.core.startup import ensure_admin_user
 from app.database import init_db
-from app.api.routes import auth, eventManager, event, admin
+from app.api.routes import auth, eventManager, event, admin, chat, payment
 from app.schemas.CommonResponse import ApiResponse
 
 
@@ -70,6 +70,8 @@ app.include_router(auth.router)
 app.include_router(eventManager.router)
 app.include_router(event.router)
 app.include_router(admin.router)
+app.include_router(payment.router)
+app.include_router(chat.router)
 
 
 
